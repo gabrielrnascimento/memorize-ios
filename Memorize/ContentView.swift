@@ -8,17 +8,15 @@
 import SwiftUI
 
 struct ContentView: View {
-    let halloweenEmojiArray = ["👻", "🎃", "🕷", "🕸", "🦇", "🧛‍♂️", "🧟‍♀️", "🧙‍♀️", "🪦", "🧹", "🍬", "🍫"]
+    let halloweenEmojiArray = ["👻", "🎃", "🕷", "🕸", "🦇", "🧛‍♂️", "🧟‍♀️", "🧙‍♀️", "🪦", "👿"]
     let plantEmojiArray = ["🌱", "🌿", "☘️", "🍀", "🎋", "🌵", "🌴", "🌳", "🌲", "🌾", "🌷"]
-    let foodEmojiArray = ["🍎", "🍌", "🍒", "🍇", "🍉", "🍓", "🍍", "🥭", "🍑", "🍋", "🍊", "🍐", "🥥", "🥝", "🍅", "🥑", "🥒", "🌶️", "🥕", "🌽", "🍆", "🍠", "🥔", "🍠", "🍟", "🍔", "🍕", "🌭", "🍿", "🍱", "🍣", "🍜", "🍲", "🍛", "🍚", "🍙", "🍘", "🍢", "🍡", "🍧", "🍨", "🍦", "🥧", "🍰", "🎂", "🍪", "🍩", "🍫", "🍬", "🍭", "🍮", "🍯"]
+    let foodEmojiArray = ["🍟", "🍔", "🍕", "🌭", "🍿", "🍦", "🍰", "🎂", "🍪", "🍩", "🍫", "🍭"]
     
-    @State var cardCount: Int = 4
     @State var theme: [String] = []
     @State var themeIndex: Int = 0
     
-    init(cardCount: Int = 4) {
-        _cardCount = State(initialValue: cardCount)
-        _theme = State(initialValue: halloweenEmojiArray)
+    init() {
+        _theme = State(initialValue: halloweenEmojiArray + halloweenEmojiArray)
     }
     
     var body: some View {
@@ -28,25 +26,19 @@ struct ContentView: View {
                     cards
                 }
                 .padding(.horizontal)
-                
                 themeButtons
-                
-                .navigationTitle("Memorize")
-            }
-            .onAppear {
-                updateTheme(to: themeIndex)
+                    .navigationTitle("Memorize")
             }
         }
     }
     
     var cards: some View {
-        LazyVGrid(columns: [GridItem(.adaptive(minimum: 120))]) {
-            ForEach(0..<cardCount, id: \.self) { index in
+        LazyVGrid(columns: [GridItem(.adaptive(minimum: 65), spacing: 5)], spacing: 5) {
+            ForEach(0..<theme.count, id: \.self) { index in
                 Card(content: theme[index])
                     .aspectRatio(2/3, contentMode: .fill)
             }
         }
-        .padding()
     }
     
     var themeButtons: some View {
@@ -61,7 +53,9 @@ struct ContentView: View {
     private func updateTheme(to index: Int) {
         themeIndex = index
         let themeArray = [halloweenEmojiArray, plantEmojiArray, foodEmojiArray]
-        theme = themeArray[index]
+        let selectedTheme = themeArray[index]
+        theme = (selectedTheme + selectedTheme)
+        
     }
 }
 
@@ -71,7 +65,7 @@ struct Card: View {
     
     var body: some View {
         ZStack {
-            let base = RoundedRectangle(cornerRadius: 25.0)
+            let base = RoundedRectangle(cornerRadius: 15.0)
             Group {
                 base
                     .fill(.white)
