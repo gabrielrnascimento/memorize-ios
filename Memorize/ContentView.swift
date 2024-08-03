@@ -8,16 +8,12 @@
 import SwiftUI
 
 struct ContentView: View {
-    let halloweenEmojiArray = ["👻", "🎃", "🕷", "🕸", "🦇", "🧛‍♂️", "🧟‍♀️", "🧙‍♀️", "🪦", "👿"]
-    let plantEmojiArray = ["🌱", "🌿", "☘️", "🍀", "🎋", "🌵", "🌴", "🌳", "🌲", "🌾", "🌷"]
+    let vehicleEmojiArray = ["🚗", "🚚", "🚲", "🏍️", "🚂", "🚌", "🚎", "🚢", "⛵", "✈️", "🚁"]
+    let natureEmojiArray = ["🌱", "🌿", "🍀", "🎋", "🌵", "🌴", "🌳", "🌲", "🌾", "🌷"]
     let foodEmojiArray = ["🍟", "🍔", "🍕", "🌭", "🍿", "🍦", "🍰", "🎂", "🍪", "🍩", "🍫", "🍭"]
     
     @State var theme: [String] = []
-    @State var themeIndex: Int = 0
-    
-    init() {
-        _theme = State(initialValue: (halloweenEmojiArray + halloweenEmojiArray).shuffled())
-    }
+    @State var themeIndex: Int = 4 // TODO improve this
     
     var body: some View {
         NavigationStack {
@@ -40,19 +36,20 @@ struct ContentView: View {
             }
         }
     }
+
     
     var themeButtons: some View {
         HStack(spacing: 50) {
-            ActionButton(label: "Halloween", index: 0, action: updateTheme, isDisabled: themeIndex == 0)
-            ActionButton(label: "Plants", index: 1, action: updateTheme, isDisabled: themeIndex == 1)
-            ActionButton(label: "Food", index: 2, action: updateTheme, isDisabled: themeIndex == 2)
+            ActionButton(label: "Vehicles", symbol: "car.circle", index: 0, action: updateTheme, isDisabled: themeIndex == 0)
+            ActionButton(label: "Plants", symbol: "leaf.circle", index: 1, action: updateTheme, isDisabled: themeIndex == 1)
+            ActionButton(label: "Foods", symbol: "fork.knife.circle", index: 2, action: updateTheme, isDisabled: themeIndex == 2)
         }
         .padding()
     }
     
     private func updateTheme(to index: Int) {
         themeIndex = index
-        let themeArray = [halloweenEmojiArray, plantEmojiArray, foodEmojiArray]
+        let themeArray = [vehicleEmojiArray, natureEmojiArray, foodEmojiArray]
         let selectedTheme = themeArray[index]
         theme = (selectedTheme + selectedTheme).shuffled()
         
@@ -84,17 +81,23 @@ struct Card: View {
 
 struct ActionButton: View {
     let label: String
+    let symbol: String
     let index: Int
     let action: (Int) -> Void
     let isDisabled: Bool
     
     var body: some View {
-        Button(action: {
-            action(index)
-        }, label: {
-            Text(label)
-        })
-        .disabled(isDisabled)
+            Button(action: {
+                action(index)
+            }) {
+                VStack {
+                    Image(systemName: symbol)
+                        .font(/*@START_MENU_TOKEN@*/.title/*@END_MENU_TOKEN@*/)
+                        .imageScale(.large)
+                    Text(label)
+                }
+            }
+            .disabled(isDisabled)
     }
 }
 
