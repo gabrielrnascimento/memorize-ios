@@ -16,7 +16,7 @@ struct ContentView: View {
     @State var themeIndex: Int = 0
     
     init() {
-        _theme = State(initialValue: halloweenEmojiArray + halloweenEmojiArray)
+        _theme = State(initialValue: (halloweenEmojiArray + halloweenEmojiArray).shuffled())
     }
     
     var body: some View {
@@ -54,7 +54,7 @@ struct ContentView: View {
         themeIndex = index
         let themeArray = [halloweenEmojiArray, plantEmojiArray, foodEmojiArray]
         let selectedTheme = themeArray[index]
-        theme = (selectedTheme + selectedTheme)
+        theme = (selectedTheme + selectedTheme).shuffled()
         
     }
 }
