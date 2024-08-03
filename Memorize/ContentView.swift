@@ -8,19 +8,21 @@
 import SwiftUI
 
 struct ContentView: View {
-    let vehicleEmojiArray = ["🚗", "🚚", "🚲", "🏍️", "🚂", "🚌", "🚎", "🚢", "⛵", "✈️", "🚁"]
-    let natureEmojiArray = ["🌱", "🌿", "🍀", "🎋", "🌵", "🌴", "🌳", "🌲", "🌾", "🌷"]
-    let foodEmojiArray = ["🍟", "🍔", "🍕", "🌭", "🍿", "🍦", "🍰", "🎂", "🍪", "🍩", "🍫", "🍭"]
     
-    @State var theme: [String] = []
-    @State var themeIndex: Int? = nil
+    let themes: [Theme: (emojis: [String], color: Color)] = [
+        .vehicles: (["🚗", "🚚", "🚲", "🏍️", "🚂", "🚌", "🚎", "🚢", "⛵", "✈️", "🚁"], .vehicleColor),
+        .plants: (["🌱", "🌿", "🍀", "🎋", "🌵", "🌴", "🌳", "🌲", "🌾", "🌷"], .plantColor),
+        .foods: (["🍟", "🍔", "🍕", "🌭", "🍿", "🍦", "🍰", "🎂", "🍪", "🍩", "🍫", "🍭"], .foodColor)
+    ]
+    
+    @State var selectedTheme: Theme? = nil
     
     var body: some View {
         NavigationStack {
             VStack {
-                if let _ = themeIndex {
+                if let theme = selectedTheme {
                     ScrollView {
-                        cards
+                        cards(for: theme)
                     }
                     .padding(.horizontal)
                 }
@@ -38,36 +40,66 @@ struct ContentView: View {
         }
     }
     
-    var cards: some View {
-        LazyVGrid(columns: [GridItem(.adaptive(minimum: 65), spacing: 5)], spacing: 5) {
-            ForEach(0..<theme.count, id: \.self) { index in
-                Card(content: theme[index])
+    private func cards(for theme: Theme) -> some View {
+        let (emojis, color) = themes[theme] ?? ([], .white)
+        
+        let duplicatedEmojis = (emojis + emojis).shuffled()
+        
+        return LazyVGrid(columns: [GridItem(.adaptive(minimum: 65), spacing: 5)], spacing: 5) {
+            ForEach(duplicatedEmojis.indices, id: \.self) { index in
+                Card(content: duplicatedEmojis[index], themeColor: color)
                     .aspectRatio(2/3, contentMode: .fill)
             }
         }
     }
     
-    
     var themeButtons: some View {
         HStack(spacing: 50) {
-            ActionButton(label: "Vehicles", symbol: "car.circle", index: 0, action: updateTheme, isDisabled: themeIndex == 0)
-            ActionButton(label: "Plants", symbol: "leaf.circle", index: 1, action: updateTheme, isDisabled: themeIndex == 1)
-            ActionButton(label: "Foods", symbol: "fork.knife.circle", index: 2, action: updateTheme, isDisabled: themeIndex == 2)
+            ActionButton(
+                label: "Vehicles",
+                symbol: "car.circle",
+                action: updateTheme,
+                theme: .vehicles,
+                selectedTheme: selectedTheme
+            )
+            ActionButton(
+                label: "Plants",
+                symbol: "leaf.circle",
+                action: updateTheme,
+                theme: .plants,
+                selectedTheme: selectedTheme
+            )
+            ActionButton(
+                label: "Foods", 
+                symbol: "fork.knife.circle",
+                action: updateTheme,
+                theme: .foods,
+                selectedTheme: selectedTheme
+            )
         }
         .padding()
     }
     
-    private func updateTheme(to index: Int) {
-        themeIndex = index
-        let themeArray = [vehicleEmojiArray, natureEmojiArray, foodEmojiArray]
-        let selectedTheme = themeArray[index]
-        theme = (selectedTheme + selectedTheme).shuffled()
-        
+    private func updateTheme(to theme: Theme) {
+        selectedTheme = theme
     }
+}
+
+enum Theme {
+    case vehicles
+    case plants
+    case foods
+}
+
+extension Color {
+    static let vehicleColor = Color(red: 70/255, green: 130/255, blue: 180/255)
+    static let plantColor = Color(red: 34/255, green: 139/255, blue: 34/255)
+    static let foodColor = Color(red: 255/255, green: 99/255, blue: 71/255)
 }
 
 struct Card: View {
     let content: String
+    let themeColor: Color
     @State var isFaceUp = false
     
     var body: some View {
@@ -76,12 +108,12 @@ struct Card: View {
             Group {
                 base
                     .fill(.white)
-                    .strokeBorder(.orange, lineWidth: 4)
+                    .strokeBorder(themeColor, lineWidth: 4)
                 Text(content)
                     .font(.largeTitle)
             }
             .opacity(isFaceUp ? 1 : 0)
-            base.fill(.orange).opacity(isFaceUp ? 0 : 1)
+            base.fill(themeColor).opacity(isFaceUp ? 0 : 1)
         }
         .onTapGesture {
             isFaceUp.toggle()
@@ -92,13 +124,13 @@ struct Card: View {
 struct ActionButton: View {
     let label: String
     let symbol: String
-    let index: Int
-    let action: (Int) -> Void
-    let isDisabled: Bool
+    let action: (Theme) -> Void
+    let theme: Theme
+    let selectedTheme: Theme?
     
     var body: some View {
         Button(action: {
-            action(index)
+            action(theme)
         }) {
             VStack {
                 Image(systemName: symbol)
@@ -107,7 +139,7 @@ struct ActionButton: View {
                 Text(label)
             }
         }
-        .disabled(isDisabled)
+        .disabled(selectedTheme == theme)
     }
 }
 
