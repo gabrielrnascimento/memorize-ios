@@ -15,16 +15,18 @@ struct ContentView: View {
         .foods: (["🍟", "🍔", "🍕", "🌭", "🍿", "🍦", "🍰", "🎂", "🍪", "🍩", "🍫", "🍭"], .foodColor)
     ]
     
-    @State var selectedTheme: Theme? = nil
+    @State var selectedTheme: Theme? = .vehicles
     
     var body: some View {
         NavigationStack {
             VStack {
                 if let theme = selectedTheme {
-                    ScrollView {
-                        cards(for: theme)
+                    GeometryReader { geometry in
+                        ScrollView {
+                            cards(for: theme, availableWidth: geometry.size.width)
+                        }
+                        .padding(.horizontal)
                     }
-                    .padding(.horizontal)
                 }
                 else {
                     Spacer()
@@ -40,19 +42,43 @@ struct ContentView: View {
         }
     }
     
-    private func cards(for theme: Theme) -> some View {
+    private func cards(for theme: Theme, availableWidth: CGFloat) -> some View {
         let (emojis, color) = themes[theme] ?? ([], .white)
         
         let quantityOfCards = Int.random(in: 2..<emojis.count)
         let emojisArray = emojis[0..<quantityOfCards]
         let duplicatedEmojis = (emojisArray + emojisArray).shuffled()
         
-        return LazyVGrid(columns: [GridItem(.adaptive(minimum: 65), spacing: 5)], spacing: 5) {
+        let cardWidth = maxCardWidth(for: duplicatedEmojis.count, availableWidth: availableWidth)
+        
+        return LazyVGrid(
+            columns: [GridItem(.adaptive(minimum: cardWidth), spacing: 5)],
+            spacing: 5
+        ) {
             ForEach(duplicatedEmojis.indices, id: \.self) { index in
                 Card(content: duplicatedEmojis[index], themeColor: color)
                     .aspectRatio(2/3, contentMode: .fill)
             }
         }
+    }
+    
+    private func maxCardWidth(for cardsCount: Int, availableWidth: CGFloat) -> CGFloat {
+        let ratio = 0.17
+        let minCardWidth = availableWidth * ratio
+        
+        var result: CGFloat
+        result = availableWidth
+        if cardsCount == 2 {
+            result = 120
+        } else if cardsCount < 10 {
+            result = 90
+        } else if cardsCount < 17 {
+            result = 85
+        } else {
+            result = minCardWidth
+        }
+
+        return result
     }
     
     var themeButtons: some View {
@@ -72,7 +98,7 @@ struct ContentView: View {
                 selectedTheme: selectedTheme
             )
             ActionButton(
-                label: "Foods", 
+                label: "Foods",
                 symbol: "fork.knife.circle",
                 action: updateTheme,
                 theme: .foods,
