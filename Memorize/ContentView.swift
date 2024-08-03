@@ -43,7 +43,9 @@ struct ContentView: View {
     private func cards(for theme: Theme) -> some View {
         let (emojis, color) = themes[theme] ?? ([], .white)
         
-        let duplicatedEmojis = (emojis + emojis).shuffled()
+        let quantityOfCards = Int.random(in: 2..<emojis.count)
+        let emojisArray = emojis[0..<quantityOfCards]
+        let duplicatedEmojis = (emojisArray + emojisArray).shuffled()
         
         return LazyVGrid(columns: [GridItem(.adaptive(minimum: 65), spacing: 5)], spacing: 5) {
             ForEach(duplicatedEmojis.indices, id: \.self) { index in
