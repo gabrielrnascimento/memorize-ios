@@ -13,11 +13,14 @@ struct ContentView: View {
     @State var cardCount: Int = 4
     
     var body: some View {
-        VStack {
-            ScrollView {
-                cards
+        NavigationStack {
+            VStack {
+                ScrollView {
+                    cards
+                }
+                .padding(.horizontal)
             }
-            .padding(.horizontal)
+            .navigationTitle("Memorize")
         }
         
     }
