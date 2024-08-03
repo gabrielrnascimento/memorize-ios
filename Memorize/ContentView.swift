@@ -13,15 +13,25 @@ struct ContentView: View {
     let foodEmojiArray = ["🍟", "🍔", "🍕", "🌭", "🍿", "🍦", "🍰", "🎂", "🍪", "🍩", "🍫", "🍭"]
     
     @State var theme: [String] = []
-    @State var themeIndex: Int = 4 // TODO improve this
+    @State var themeIndex: Int? = nil
     
     var body: some View {
         NavigationStack {
             VStack {
-                ScrollView {
-                    cards
+                if let _ = themeIndex {
+                    ScrollView {
+                        cards
+                    }
+                    .padding(.horizontal)
                 }
-                .padding(.horizontal)
+                else {
+                    Spacer()
+                    Text("Select a theme to start")
+                        .font(/*@START_MENU_TOKEN@*/.title/*@END_MENU_TOKEN@*/)
+                        .foregroundStyle(.gray)
+                    Spacer()
+                }
+                
                 themeButtons
                     .navigationTitle("Memorize")
             }
@@ -36,7 +46,7 @@ struct ContentView: View {
             }
         }
     }
-
+    
     
     var themeButtons: some View {
         HStack(spacing: 50) {
@@ -87,17 +97,17 @@ struct ActionButton: View {
     let isDisabled: Bool
     
     var body: some View {
-            Button(action: {
-                action(index)
-            }) {
-                VStack {
-                    Image(systemName: symbol)
-                        .font(/*@START_MENU_TOKEN@*/.title/*@END_MENU_TOKEN@*/)
-                        .imageScale(.large)
-                    Text(label)
-                }
+        Button(action: {
+            action(index)
+        }) {
+            VStack {
+                Image(systemName: symbol)
+                    .font(/*@START_MENU_TOKEN@*/.title/*@END_MENU_TOKEN@*/)
+                    .imageScale(.large)
+                Text(label)
             }
-            .disabled(isDisabled)
+        }
+        .disabled(isDisabled)
     }
 }
 
