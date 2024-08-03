@@ -8,9 +8,18 @@
 import SwiftUI
 
 struct ContentView: View {
-    let emojis = ["👻", "🎃", "🕷", "🕸", "🦇", "🧛‍♂️", "🧟‍♀️", "🧙‍♀️", "🪦", "🧹", "🍬", "🍫"]
+    let halloweenEmojiArray = ["👻", "🎃", "🕷", "🕸", "🦇", "🧛‍♂️", "🧟‍♀️", "🧙‍♀️", "🪦", "🧹", "🍬", "🍫"]
+    let plantEmojiArray = ["🌱", "🌿", "☘️", "🍀", "🎋", "🌵", "🌴", "🌳", "🌲", "🌾", "🌷"]
+    let foodEmojiArray = ["🍎", "🍌", "🍒", "🍇", "🍉", "🍓", "🍍", "🥭", "🍑", "🍋", "🍊", "🍐", "🥥", "🥝", "🍅", "🥑", "🥒", "🌶️", "🥕", "🌽", "🍆", "🍠", "🥔", "🍠", "🍟", "🍔", "🍕", "🌭", "🍿", "🍱", "🍣", "🍜", "🍲", "🍛", "🍚", "🍙", "🍘", "🍢", "🍡", "🍧", "🍨", "🍦", "🥧", "🍰", "🎂", "🍪", "🍩", "🍫", "🍬", "🍭", "🍮", "🍯"]
     
     @State var cardCount: Int = 4
+    @State var theme: [String] = []
+    @State var themeIndex: Int = 0
+    
+    init(cardCount: Int = 4) {
+        _cardCount = State(initialValue: cardCount)
+        _theme = State(initialValue: halloweenEmojiArray)
+    }
     
     var body: some View {
         NavigationStack {
@@ -19,20 +28,40 @@ struct ContentView: View {
                     cards
                 }
                 .padding(.horizontal)
+                
+                themeButtons
+                
+                .navigationTitle("Memorize")
             }
-            .navigationTitle("Memorize")
+            .onAppear {
+                updateTheme(to: themeIndex)
+            }
         }
-        
     }
     
     var cards: some View {
         LazyVGrid(columns: [GridItem(.adaptive(minimum: 120))]) {
             ForEach(0..<cardCount, id: \.self) { index in
-                Card(content: emojis[index])
+                Card(content: theme[index])
                     .aspectRatio(2/3, contentMode: .fill)
             }
         }
         .padding()
+    }
+    
+    var themeButtons: some View {
+        HStack(spacing: 50) {
+            ActionButton(label: "Halloween", index: 0, action: updateTheme, isDisabled: themeIndex == 0)
+            ActionButton(label: "Plants", index: 1, action: updateTheme, isDisabled: themeIndex == 1)
+            ActionButton(label: "Food", index: 2, action: updateTheme, isDisabled: themeIndex == 2)
+        }
+        .padding()
+    }
+    
+    private func updateTheme(to index: Int) {
+        themeIndex = index
+        let themeArray = [halloweenEmojiArray, plantEmojiArray, foodEmojiArray]
+        theme = themeArray[index]
     }
 }
 
@@ -56,6 +85,22 @@ struct Card: View {
         .onTapGesture {
             isFaceUp.toggle()
         }
+    }
+}
+
+struct ActionButton: View {
+    let label: String
+    let index: Int
+    let action: (Int) -> Void
+    let isDisabled: Bool
+    
+    var body: some View {
+        Button(action: {
+            action(index)
+        }, label: {
+            Text(label)
+        })
+        .disabled(isDisabled)
     }
 }
 
