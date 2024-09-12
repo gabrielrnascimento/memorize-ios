@@ -1,5 +1,5 @@
 //
-//  ContentView.swift
+//  EmojiMemoryGameView.swift
 //  Memorize
 //
 //  Created by Gabriel Nascimento on 27/07/24.
@@ -7,13 +7,9 @@
 
 import SwiftUI
 
-struct ContentView: View {
-    
-    let themes: [Theme: (emojis: [String], color: Color)] = [
-        .vehicles: (["🚗", "🚚", "🚲", "🏍️", "🚂", "🚌", "🚎", "🚢", "⛵", "✈️", "🚁"], .vehicleColor),
-        .plants: (["🌱", "🌿", "🍀", "🎋", "🌵", "🌴", "🌳", "🌲", "🌾", "🌷"], .plantColor),
-        .foods: (["🍟", "🍔", "🍕", "🌭", "🍿", "🍦", "🍰", "🎂", "🍪", "🍩", "🍫", "🍭"], .foodColor)
-    ]
+// View
+struct EmojiMemoryGameView: View {
+    @ObservedObject var viewModel: EmojiMemoryGame
     
     @State var selectedTheme: Theme? = .vehicles
     
@@ -24,6 +20,7 @@ struct ContentView: View {
                     GeometryReader { geometry in
                         ScrollView {
                             cards(for: theme, availableWidth: geometry.size.width)
+                                .animation(.default, value: viewModel.cards)
                         }
                         .padding(.horizontal)
                     }
@@ -31,33 +28,35 @@ struct ContentView: View {
                 else {
                     Spacer()
                     Text("Select a theme to start")
-                        .font(/*@START_MENU_TOKEN@*/.title/*@END_MENU_TOKEN@*/)
+                        .font(.title)
                         .foregroundStyle(.gray)
                     Spacer()
                 }
-                
-                themeButtons
-                    .navigationTitle("Memorize")
+                    
+//                themeButtons // TODO: Add themes
+
+                Button("Shuffle") {
+                    viewModel.shuffle()
+                }
             }
+            .navigationTitle("Memorize")
         }
     }
     
     private func cards(for theme: Theme, availableWidth: CGFloat) -> some View {
-        let (emojis, color) = themes[theme] ?? ([], .white)
-        
-        let quantityOfCards = Int.random(in: 2..<emojis.count)
-        let emojisArray = emojis[0..<quantityOfCards]
-        let duplicatedEmojis = (emojisArray + emojisArray).shuffled()
-        
-        let cardWidth = maxCardWidth(for: duplicatedEmojis.count, availableWidth: availableWidth)
+        let cardWidth = maxCardWidth(for: viewModel.cards.count, availableWidth: availableWidth)
         
         return LazyVGrid(
-            columns: [GridItem(.adaptive(minimum: cardWidth), spacing: 5)],
-            spacing: 5
+            columns: [GridItem(.adaptive(minimum: cardWidth), spacing: 0)],
+            spacing: 0
         ) {
-            ForEach(duplicatedEmojis.indices, id: \.self) { index in
-                Card(content: duplicatedEmojis[index], themeColor: color)
+            ForEach(viewModel.cards) { card in
+                CardView(card)
                     .aspectRatio(2/3, contentMode: .fill)
+                    .padding(4)
+                    .onTapGesture {
+                        viewModel.choose(card)
+                    }
             }
         }
     }
@@ -125,10 +124,12 @@ extension Color {
     static let foodColor = Color(red: 255/255, green: 99/255, blue: 71/255)
 }
 
-struct Card: View {
-    let content: String
-    let themeColor: Color
-    @State var isFaceUp = false
+struct CardView: View {
+    let card: MemoryGame<String>.Card
+    
+    init(_ card: MemoryGame<String>.Card) {
+        self.card = card
+    }
     
     var body: some View {
         ZStack {
@@ -136,16 +137,17 @@ struct Card: View {
             Group {
                 base
                     .fill(.white)
-                    .strokeBorder(themeColor, lineWidth: 4)
-                Text(content)
-                    .font(.largeTitle)
+                    .strokeBorder(.red, lineWidth: 4)
+                Text(card.content)
+                    .font(.system(size: 200))
+                    .minimumScaleFactor(0.01)
+                    .aspectRatio(1, contentMode: .fit)
             }
-            .opacity(isFaceUp ? 1 : 0)
-            base.fill(themeColor).opacity(isFaceUp ? 0 : 1)
+                .opacity(card.isFaceUp ? 1 : 0)
+            base.fill(.red)
+                .opacity(card.isFaceUp ? 0 : 1)
         }
-        .onTapGesture {
-            isFaceUp.toggle()
-        }
+        .opacity(card.isFaceUp || !card.isMatched ? 1 : 0)
     }
 }
 
@@ -172,5 +174,5 @@ struct ActionButton: View {
 }
 
 #Preview {
-    ContentView()
+    EmojiMemoryGameView(viewModel: EmojiMemoryGame())
 }
