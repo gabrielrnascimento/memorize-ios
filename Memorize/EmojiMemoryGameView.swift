@@ -11,73 +11,32 @@ import SwiftUI
 struct EmojiMemoryGameView: View {
     @ObservedObject var viewModel: EmojiMemoryGame
     
+    private let aspectRatio: CGFloat = 2/3
+    
     @State var selectedTheme: Theme? = .vehicles
     
     var body: some View {
         NavigationStack {
             VStack {
-                if let theme = selectedTheme {
-                    GeometryReader { geometry in
-                        ScrollView {
-                            cards(for: theme, availableWidth: geometry.size.width)
-                                .animation(.default, value: viewModel.cards)
-                        }
-                        .padding(.horizontal)
-                    }
-                }
-                else {
-                    Spacer()
-                    Text("Select a theme to start")
-                        .font(.title)
-                        .foregroundStyle(.gray)
-                    Spacer()
-                }
-                    
-//                themeButtons // TODO: Add themes
-
+                cards
+                    .animation(.default, value: viewModel.cards)
                 Button("Shuffle") {
                     viewModel.shuffle()
                 }
             }
+            .padding()
             .navigationTitle("Memorize")
         }
     }
     
-    private func cards(for theme: Theme, availableWidth: CGFloat) -> some View {
-        let cardWidth = maxCardWidth(for: viewModel.cards.count, availableWidth: availableWidth)
-        
-        return LazyVGrid(
-            columns: [GridItem(.adaptive(minimum: cardWidth), spacing: 0)],
-            spacing: 0
-        ) {
-            ForEach(viewModel.cards) { card in
-                CardView(card)
-                    .aspectRatio(2/3, contentMode: .fill)
-                    .padding(4)
-                    .onTapGesture {
-                        viewModel.choose(card)
-                    }
-            }
+    private var cards: some View {
+        AspectVGrid(viewModel.cards, aspectRatio: aspectRatio) { card in
+            CardView(card)
+                .padding(4)
+                .onTapGesture {
+                    viewModel.choose(card)
+                }
         }
-    }
-    
-    private func maxCardWidth(for cardsCount: Int, availableWidth: CGFloat) -> CGFloat {
-        let ratio = 0.17
-        let minCardWidth = availableWidth * ratio
-        
-        var result: CGFloat
-        result = availableWidth
-        if cardsCount == 2 {
-            result = 120
-        } else if cardsCount < 10 {
-            result = 90
-        } else if cardsCount < 17 {
-            result = 85
-        } else {
-            result = minCardWidth
-        }
-
-        return result
     }
     
     var themeButtons: some View {
@@ -143,8 +102,8 @@ struct CardView: View {
                     .minimumScaleFactor(0.01)
                     .aspectRatio(1, contentMode: .fit)
             }
-                .opacity(card.isFaceUp ? 1 : 0)
-            base.fill(.red)
+            .opacity(card.isFaceUp ? 1 : 0)
+            base.fill(.orange)
                 .opacity(card.isFaceUp ? 0 : 1)
         }
         .opacity(card.isFaceUp || !card.isMatched ? 1 : 0)
