@@ -15,9 +15,17 @@ struct EmojiMemoryGameView: View {
     
     var body: some View {
         VStack {
+            HStack {
+                Text("theme:")
+                    .fontWeight(.semibold)
+                Text(viewModel.theme.name)
+                    .fontWeight(.bold)
+                    .foregroundStyle(viewModel.theme.color)
+                Spacer()
+            }
             cards
                 .animation(.default, value: viewModel.cards)
-            Button("New Game") {
+            Button("new game") {
                 viewModel.start()
             }
         }
