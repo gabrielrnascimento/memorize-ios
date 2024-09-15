@@ -47,6 +47,10 @@ struct MemoryGame<CardContent> where CardContent: Equatable {
         cards.shuffle()
     }
     
+    mutating func start() {
+        self.shuffle()
+    }
+    
     struct Card: Equatable, Identifiable, CustomDebugStringConvertible {
         var debugDescription: String {
             return "\(id): \(content) \(isFaceUp ? "up" : "down") \(isMatched ? "matched" : "")"

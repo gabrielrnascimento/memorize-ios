@@ -18,6 +18,9 @@ struct EmojiMemoryGameView: View {
             VStack {
                 cards
                     .animation(.default, value: viewModel.cards)
+                Button("New Game") {
+                    viewModel.start()
+                }
             }
             .padding()
         }
