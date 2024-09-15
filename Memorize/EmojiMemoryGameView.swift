@@ -22,6 +22,9 @@ struct EmojiMemoryGameView: View {
                     .fontWeight(.bold)
                     .foregroundStyle(viewModel.theme.color)
                 Spacer()
+                Text("score:")
+                Text(viewModel.score.description)
+                    .fontWeight(/*@START_MENU_TOKEN@*/.bold/*@END_MENU_TOKEN@*/)
             }
             cards
                 .animation(.default, value: viewModel.cards)

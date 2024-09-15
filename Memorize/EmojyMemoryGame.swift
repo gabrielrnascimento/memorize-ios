@@ -33,6 +33,10 @@ class EmojiMemoryGame: ObservableObject {
         return model.cards
     }
     
+    var score: Int {
+        return model.score
+    }
+    
     func randomTheme() {
         let themesArray = Array(EmojiMemoryGame.themes.values)
         theme = themesArray.randomElement()!

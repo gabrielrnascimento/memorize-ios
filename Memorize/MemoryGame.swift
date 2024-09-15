@@ -10,6 +10,7 @@ import Foundation
 
 struct MemoryGame<CardContent> where CardContent: Equatable {
     private(set) var cards: Array<Card>
+    private(set) var score = 0
     
     init(numberOfPairsOfCards: Int, cardContentFactory: (Int) -> CardContent) {
         cards = []
@@ -32,8 +33,13 @@ struct MemoryGame<CardContent> where CardContent: Equatable {
             if !cards[chosenIndex].isFaceUp && !cards[chosenIndex].isMatched {
                 if let potentialMatchIndex = indexOfTheOneAndOnlyFaceUpCard {
                     if cards[chosenIndex].content == cards[potentialMatchIndex].content {
+                        score += 2
                         cards[chosenIndex].isMatched = true
                         cards[potentialMatchIndex].isMatched = true
+                    } else {
+                        if cards[chosenIndex].flipCount > 1 || cards[potentialMatchIndex].flipCount > 1 {
+                            score -= 1
+                        }
                     }
                 } else {
                     indexOfTheOneAndOnlyFaceUpCard = chosenIndex
@@ -54,14 +60,27 @@ struct MemoryGame<CardContent> where CardContent: Equatable {
     
     struct Card: Equatable, Identifiable, CustomDebugStringConvertible {
         var debugDescription: String {
-            return "\(id): \(content) \(isFaceUp ? "up" : "down") \(isMatched ? "matched" : "")"
+            return "\(id): \(content) \(isFaceUp ? "up" : "down") \(isMatched ? "matched" : "") flipped: \(flipCount)"
         }
         
-        var isFaceUp = false
+        var isFaceUp: Bool {
+            get { return _isFaceUp }
+            set { if newValue && !_isFaceUp { flipCount += 1 }; _isFaceUp = newValue; print(self) }
+        }
+        private var _isFaceUp = false
         var isMatched = false
         let content: CardContent
-
+        var flipCount = 0
+        
         var id: String
+        
+        init(isMatched: Bool = false, content: CardContent, id: String) {
+            self._isFaceUp = false
+            self.isMatched = isMatched
+            self.content = content
+            self.flipCount = 0
+            self.id = id
+        }
     }
 }
 
