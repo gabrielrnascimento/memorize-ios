@@ -18,12 +18,8 @@ struct EmojiMemoryGameView: View {
             VStack {
                 cards
                     .animation(.default, value: viewModel.cards)
-                Button("Shuffle") {
-                    viewModel.shuffle()
-                }
             }
             .padding()
-            .navigationTitle("Memorize")
         }
     }
     
