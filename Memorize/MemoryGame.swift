@@ -65,7 +65,7 @@ struct MemoryGame<CardContent> where CardContent: Equatable {
         
         var isFaceUp: Bool {
             get { return _isFaceUp }
-            set { if newValue && !_isFaceUp { flipCount += 1 }; _isFaceUp = newValue; print(self) }
+            set { if newValue && !_isFaceUp { flipCount += 1 }; _isFaceUp = newValue }
         }
         private var _isFaceUp = false
         var isMatched = false
