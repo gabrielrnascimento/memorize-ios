@@ -14,6 +14,7 @@
 		0269D6CF2C55726100DEBB39 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 0269D6CE2C55726100DEBB39 /* Assets.xcassets */; };
 		0269D6D22C55726100DEBB39 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 0269D6D12C55726100DEBB39 /* Preview Assets.xcassets */; };
 		02A52D452C951E9100B1591F /* AspectVGrid.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02A52D442C951E9100B1591F /* AspectVGrid.swift */; };
+		02A52D482C974C4C00B1591F /* Theme.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02A52D472C974C4C00B1591F /* Theme.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -25,6 +26,7 @@
 		0269D6CE2C55726100DEBB39 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		0269D6D12C55726100DEBB39 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		02A52D442C951E9100B1591F /* AspectVGrid.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AspectVGrid.swift; sourceTree = "<group>"; };
+		02A52D472C974C4C00B1591F /* Theme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Theme.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -59,6 +61,7 @@
 			children = (
 				0205C14F2C8FCB8A003BD920 /* MemoryGame.swift */,
 				0205C1512C8FCD7A003BD920 /* EmojyMemoryGame.swift */,
+				02A52D472C974C4C00B1591F /* Theme.swift */,
 				0269D6CA2C55726000DEBB39 /* MemorizeApp.swift */,
 				0269D6CC2C55726000DEBB39 /* EmojiMemoryGameView.swift */,
 				02A52D442C951E9100B1591F /* AspectVGrid.swift */,
@@ -149,6 +152,7 @@
 				0269D6CD2C55726000DEBB39 /* EmojiMemoryGameView.swift in Sources */,
 				0269D6CB2C55726000DEBB39 /* MemorizeApp.swift in Sources */,
 				0205C1502C8FCB8A003BD920 /* MemoryGame.swift in Sources */,
+				02A52D482C974C4C00B1591F /* Theme.swift in Sources */,
 				02A52D452C951E9100B1591F /* AspectVGrid.swift in Sources */,
 				0205C1522C8FCD7A003BD920 /* EmojyMemoryGame.swift in Sources */,
 			);

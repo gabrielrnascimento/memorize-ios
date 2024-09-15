@@ -14,21 +14,19 @@ struct EmojiMemoryGameView: View {
     private let aspectRatio: CGFloat = 2/3
     
     var body: some View {
-        NavigationStack {
-            VStack {
-                cards
-                    .animation(.default, value: viewModel.cards)
-                Button("New Game") {
-                    viewModel.start()
-                }
+        VStack {
+            cards
+                .animation(.default, value: viewModel.cards)
+            Button("New Game") {
+                viewModel.start()
             }
-            .padding()
         }
+        .padding()
     }
     
     private var cards: some View {
         AspectVGrid(viewModel.cards, aspectRatio: aspectRatio) { card in
-            CardView(card)
+            CardView(card, theme: viewModel.theme)
                 .padding(4)
                 .onTapGesture {
                     viewModel.choose(card)
@@ -39,9 +37,11 @@ struct EmojiMemoryGameView: View {
 
 struct CardView: View {
     let card: MemoryGame<String>.Card
+    let theme: Theme<String>
     
-    init(_ card: MemoryGame<String>.Card) {
+    init(_ card: MemoryGame<String>.Card, theme: Theme<String>) {
         self.card = card
+        self.theme = theme
     }
     
     var body: some View {
@@ -50,14 +50,14 @@ struct CardView: View {
             Group {
                 base
                     .fill(.white)
-                    .strokeBorder(.red, lineWidth: 4)
+                    .strokeBorder(theme.color, lineWidth: 4)
                 Text(card.content)
                     .font(.system(size: 200))
                     .minimumScaleFactor(0.01)
                     .aspectRatio(1, contentMode: .fit)
             }
             .opacity(card.isFaceUp ? 1 : 0)
-            base.fill(.orange)
+            base.fill(theme.color)
                 .opacity(card.isFaceUp ? 0 : 1)
         }
         .opacity(card.isFaceUp || !card.isMatched ? 1 : 0)
@@ -65,5 +65,7 @@ struct CardView: View {
 }
 
 #Preview {
-    EmojiMemoryGameView(viewModel: EmojiMemoryGame())
+    let themeArrays = Array(EmojiMemoryGame.themes.values)
+    let theme = themeArrays.randomElement()!
+    return EmojiMemoryGameView(viewModel: EmojiMemoryGame(theme: theme))
 }
