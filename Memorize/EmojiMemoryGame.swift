@@ -56,6 +56,10 @@ class EmojiMemoryGame: ObservableObject {
     
     func choose(_ card: MemoryGame<String>.Card) {
         model.choose(card)
+        guard model.hasPairsSelected else { return }
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1) { [self] in
+            model.turnCardsDown()
+        }
     }
 }
 
