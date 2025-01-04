@@ -1,10 +1,3 @@
-//
-//  Theme.swift
-//  Memorize
-//
-//  Created by Gabriel Nascimento on 15/09/24.
-//
-
 import SwiftUI
 
 struct Theme<Content> {

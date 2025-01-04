@@ -1,10 +1,3 @@
-//
-//  MemorizeGame.swift
-//  Memorize
-//
-//  Created by Gabriel Nascimento on 09/09/24.
-//
-
 import Foundation
 
 
@@ -26,10 +19,6 @@ struct MemoryGame<CardContent> where CardContent: Equatable {
     
     var indexOfCardToBeMatched: Int?
     
-    // FIXME: - Same card being selected and compared with itself
-    // 1. select card A
-    // 2. select card B (different content)
-    // 3. select multiple times card B within the vanish time
     mutating func turnCardsDown() {
         hasPairsSelected = false
         indexOfCardToBeMatched = nil

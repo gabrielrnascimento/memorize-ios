@@ -1,10 +1,3 @@
-//
-//  EmojyMemoryGame.swift
-//  Memorize
-//
-//  Created by Gabriel Nascimento on 09/09/24.
-//
-
 import SwiftUI
 
 class EmojiMemoryGame: ObservableObject {
