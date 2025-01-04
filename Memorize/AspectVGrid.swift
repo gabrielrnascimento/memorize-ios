@@ -1,10 +1,3 @@
-//
-//  AspectVGrid.swift
-//  Memorize
-//
-//  Created by Gabriel Nascimento on 13/09/24.
-//
-
 import SwiftUI
 
 struct AspectVGrid<Item: Identifiable, ItemView: View>: View {
